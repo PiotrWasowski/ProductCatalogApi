@@ -5,7 +5,7 @@ using ProductCatalogApi.Repositories;
 namespace ProductCatalogApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/products")]
     public class ProductsController: ControllerBase
     {
         private readonly IProductRepository _repository;

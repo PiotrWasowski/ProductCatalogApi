@@ -1,0 +1,9 @@
+<h2>Dodaj produkt</h2>
+
+<form (ngSubmit)="submit()">
+  <input [(ngModel)]="product.kod" name="kod" placeholder="Kod" required>
+  <input [(ngModel)]="product.nazwa" name="nazwa" placeholder="Nazwa" required>
+  <input [(ngModel)]="product.cena" name="cena" type="number" placeholder="Cena" required>
+
+  <button type="submit">Dodaj</button>
+</form>
