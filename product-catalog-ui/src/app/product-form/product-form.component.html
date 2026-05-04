@@ -1,23 +1,56 @@
 <h2>Dodaj produkt</h2>
 
-<form (ngSubmit)="submit()" class="form">
+<form (ngSubmit)="submit(form)" #form="ngForm" class="form">
 
+  <!-- KOD -->
   <mat-form-field appearance="outline">
     <mat-label>Kod</mat-label>
-    <input matInput [(ngModel)]="product.kod" name="kod">
+    <input matInput
+           [(ngModel)]="product.kod"
+           name="kod"
+           required
+           #kod="ngModel" />
+    <mat-error *ngIf="kod.invalid && kod.touched">
+      Kod jest wymagany
+    </mat-error>
   </mat-form-field>
 
+  <!-- NAZWA -->
   <mat-form-field appearance="outline">
     <mat-label>Nazwa</mat-label>
-    <input matInput [(ngModel)]="product.nazwa" name="nazwa">
+    <input matInput
+           [(ngModel)]="product.nazwa"
+           name="nazwa"
+           required
+           #nazwa="ngModel" />
+    <mat-error *ngIf="nazwa.invalid && nazwa.touched">
+      Nazwa jest wymagana
+    </mat-error>
   </mat-form-field>
 
+  <!-- CENA -->
   <mat-form-field appearance="outline">
     <mat-label>Cena</mat-label>
-    <input matInput type="number" [(ngModel)]="product.cena" name="cena">
+    <input matInput
+           type="number"
+           [(ngModel)]="product.cena"
+           name="cena"
+           required
+           min="0"
+           #cena="ngModel" />
+    <mat-error *ngIf="cena.errors?.['required'] && cena.touched">
+      Cena jest wymagana
+    </mat-error>
+
+    <mat-error *ngIf="cena.errors?.['min'] && cena.touched">
+      Cena nie może być mniejsza niż 0
+    </mat-error>
   </mat-form-field>
 
-  <button mat-raised-button color="primary">
+  <!-- BUTTON -->
+  <button mat-raised-button
+          color="primary"
+          [disabled]="form.invalid">
     Dodaj
   </button>
 
