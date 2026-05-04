@@ -24,6 +24,15 @@ namespace ProductCatalogApi.Controllers
         [HttpPost]
         public ActionResult Add(Product product)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new
+                {
+                    message = "Validation failed",
+                    errors = ModelState
+                });
+            }
+
             _repository.Add(product);
             return Ok();
         }
