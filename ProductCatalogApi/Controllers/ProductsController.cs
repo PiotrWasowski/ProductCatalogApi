@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ProductCatalogApi.Application.Products.Commands;
+using ProductCatalogApi.Application.Products.Queries;
 using ProductCatalogApi.Models;
-using ProductCatalogApi.Repositories;
 
 namespace ProductCatalogApi.Controllers
 {
@@ -8,23 +9,25 @@ namespace ProductCatalogApi.Controllers
     [Route("api/products")]
     public class ProductsController: ControllerBase
     {
-        private readonly IProductRepository _repository;
+        private readonly GetProductsQueryHandler _getHandler;
+        private readonly CreateProductCommandHandler _createHandler;
 
-        public ProductsController(IProductRepository repository)
+        public ProductsController(GetProductsQueryHandler getHandler, CreateProductCommandHandler createHandler)
         {
-            _repository = repository;
+            _getHandler = getHandler;
+            _createHandler = createHandler;
         }
 
         [HttpGet]
         public ActionResult<List<Product>> Get()
         {
-            return _repository.GetAll();
+            return Ok(_getHandler.Handle());
         }
 
         [HttpPost]
-        public ActionResult Add(Product product)
+        public ActionResult Add(CreateProductCommand command)
         {
-            _repository.Add(product);
+            _createHandler.Handle(command);
             return Ok();
         }
     }

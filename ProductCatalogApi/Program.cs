@@ -1,5 +1,7 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using ProductCatalogApi.Application.Products.Commands;
+using ProductCatalogApi.Application.Products.Queries;
 using ProductCatalogApi.Repositories;
 using ProductCatalogApi.Validators;
 using System.Text.Json.Serialization;
@@ -17,6 +19,8 @@ builder.Services.AddControllers()
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<ProductValidator>();
+builder.Services.AddScoped<GetProductsQueryHandler>();
+builder.Services.AddScoped<CreateProductCommandHandler>();
 
 builder.Services.AddCors(options =>
 {
