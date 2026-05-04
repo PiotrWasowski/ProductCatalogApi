@@ -1,9 +1,24 @@
 <h2>Dodaj produkt</h2>
 
-<form (ngSubmit)="submit()">
-  <input [(ngModel)]="product.kod" name="kod" placeholder="Kod" required>
-  <input [(ngModel)]="product.nazwa" name="nazwa" placeholder="Nazwa" required>
-  <input [(ngModel)]="product.cena" name="cena" type="number" placeholder="Cena" required>
+<form (ngSubmit)="submit()" class="form">
 
-  <button type="submit">Dodaj</button>
+  <mat-form-field appearance="outline">
+    <mat-label>Kod</mat-label>
+    <input matInput [(ngModel)]="product.kod" name="kod">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Nazwa</mat-label>
+    <input matInput [(ngModel)]="product.nazwa" name="nazwa">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Cena</mat-label>
+    <input matInput type="number" [(ngModel)]="product.cena" name="cena">
+  </mat-form-field>
+
+  <button mat-raised-button color="primary">
+    Dodaj
+  </button>
+
 </form>

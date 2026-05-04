@@ -1,7 +1,23 @@
 <h2>Lista produktów</h2>
 
-<ul>
-  <li *ngFor="let p of products$ | async">
-    {{p.kod}} - {{p.nazwa}} - {{p.cena}} zł
-  </li>
-</ul>
+<table mat-table [dataSource]="(products$ | async) ?? []" class="mat-elevation-z8">
+
+  <ng-container matColumnDef="kod">
+    <th mat-header-cell *matHeaderCellDef>Kod</th>
+    <td mat-cell *matCellDef="let p">{{p.kod}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="nazwa">
+    <th mat-header-cell *matHeaderCellDef>Nazwa</th>
+    <td mat-cell *matCellDef="let p">{{p.nazwa}}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="cena">
+    <th mat-header-cell *matHeaderCellDef>Cena</th>
+    <td mat-cell *matCellDef="let p">{{p.cena}}</td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="['kod', 'nazwa', 'cena']"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['kod', 'nazwa', 'cena']"></tr>
+
+</table>
