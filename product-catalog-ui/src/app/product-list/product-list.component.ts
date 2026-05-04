@@ -4,12 +4,14 @@ import { CommonModule } from "@angular/common";
 import { Observable } from 'rxjs';
 import { ProductService } from "../product.service";
 import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
   templateUrl: './product-list.component.html',
-  imports: [CommonModule, MatTableModule],
+  imports: [CommonModule, MatTableModule, MatIconModule, MatButtonModule],
 })
 
 export class ProductListComponent implements OnInit {
@@ -26,5 +28,9 @@ export class ProductListComponent implements OnInit {
   loadProducts(): void {
      this.products$ = this.productService.getProducts()
       .pipe();
+  }
+
+  delete(id: number) {
+    this.productService.deleteProduct(id).subscribe();
   }
 }

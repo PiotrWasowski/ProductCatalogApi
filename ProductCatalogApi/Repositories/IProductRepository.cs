@@ -5,6 +5,7 @@ namespace ProductCatalogApi.Repositories
     public interface IProductRepository
     {
         List<Product> GetAll();
-        void Add(Product product); 
+        void Add(Product product);
+        void Delete(int id);
     }
 }

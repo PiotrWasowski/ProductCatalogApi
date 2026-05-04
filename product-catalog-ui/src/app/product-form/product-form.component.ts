@@ -6,12 +6,12 @@ import { FormsModule } from "@angular/forms";
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-product-form',
   templateUrl: './product-form.component.html',
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSnackBarModule],
 })
 export class ProductFormComponent {
   product: Product = {
@@ -20,14 +20,22 @@ export class ProductFormComponent {
     cena: 0
   }
 
-  constructor(private productService: ProductService) { }
+  constructor(
+    private productService: ProductService,
+    private snackBar: MatSnackBar
+  ) { }
 
   submit(form: any) {
     this.productService.addProduct(this.product)
-      .subscribe(() => {
-        alert('Produkt został dodany');
-        this.product = { kod: '', nazwa: '', cena: 0 };
-        form.resetForm();
-    });
+      .subscribe({
+        next: () => {
+          this.snackBar.open('Dodano produkt', 'OK', { duration: 2000 });
+          form.resetForm();
+        },
+        error: (err) => {
+          this.snackBar.open('Błąd walidacji', 'OK');
+          console.log(err.error);
+        }
+      });
   }
 }

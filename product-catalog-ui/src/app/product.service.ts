@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { Observable, Subject, switchMap, startWith } from 'rxjs';
+import { Observable, Subject, switchMap, startWith, tap } from 'rxjs';
 import { Product } from "./models/product";
 
 @Injectable({
@@ -26,6 +26,12 @@ export class ProductService {
         this.refresh$.next();
         return this.http.get<Product[]>(this.apiUrl);
       })
+    );
+  }
+
+  deleteProduct(id: number) {
+    return this.http.delete(`${this.apiUrl}/${id}`).pipe(
+      tap(() => this.refresh$.next())
     );
   }
 }

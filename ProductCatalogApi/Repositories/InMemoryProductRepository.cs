@@ -17,5 +17,12 @@ namespace ProductCatalogApi.Repositories
         {
             return _products;
         }
+
+        public void Delete(int id)
+        {
+            var product = _products.FirstOrDefault(x => x.Id == id);
+            if (product != null)
+                _products.Remove(product);
+        }
     }
 }

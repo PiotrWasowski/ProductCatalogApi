@@ -17,7 +17,16 @@
     <td mat-cell *matCellDef="let p">{{p.cena}}</td>
   </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="['kod', 'nazwa', 'cena']"></tr>
-  <tr mat-row *matRowDef="let row; columns: ['kod', 'nazwa', 'cena']"></tr>
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef>Akcje</th>
+    <td mat-cell *matCellDef="let p">
+      <button mat-icon-button color="warn" (click)="delete(p.id)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="['kod','nazwa','cena','actions']"></tr>
+  <tr mat-row *matRowDef="let row; columns: ['kod','nazwa','cena','actions']"></tr>
 
 </table>
