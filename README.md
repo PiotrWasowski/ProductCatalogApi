@@ -173,7 +173,7 @@ Deletes a product
 
 ### Backend:
 
-```bash
+```bash```
 
 dotnet run
 
@@ -184,7 +184,7 @@ https://localhost:7172
 
 ### Frontend:
 
-```bash
+```bash```
 
 npm install
 
