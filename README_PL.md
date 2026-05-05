@@ -220,8 +220,8 @@ Usuwa produkt
 ### Backend:
 
 ```bash
-
 dotnet run
+```
 
 Domyślnie:
 https://localhost:7172
@@ -231,10 +231,9 @@ https://localhost:7172
 ### Frontend:
 
 ```bash
-
 npm install
-
 ng serve
+```
 
 Domyślnie:
 http://localhost:4200
