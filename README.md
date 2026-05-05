@@ -173,9 +173,9 @@ Deletes a product
 
 ### Backend:
 
-```bash```
+```bash
 
-dotnet run
+dotnet run```
 
 Default:
 https://localhost:7172
@@ -184,9 +184,9 @@ https://localhost:7172
 
 ### Frontend:
 
-```bash```
+```bash
 
-npm install
+npm install```
 
 ng serve
 
