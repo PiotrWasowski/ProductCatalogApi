@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 
 namespace ProductCatalog.Infrastructure.Repositories.Products.Memory
 {
-    public sealed class InMemoryProductRepository : IProductRepository
+    public sealed class InMemoryProductRepository : IProductReadRepository, IProductWriteRepository
     {
         private readonly ConcurrentDictionary<int, Product> _products = new();
         private int _nextId = 0;

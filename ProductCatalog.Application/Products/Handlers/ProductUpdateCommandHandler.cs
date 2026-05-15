@@ -7,16 +7,18 @@ namespace ProductCatalog.Application.Products.Handlers
 {
     public class ProductUpdateCommandHandler: IRequestHandler<ProductUpdateCommand, Product>
     {
-        private readonly IProductRepository _repository;
+        private readonly IProductReadRepository _repositoryRead;
+        private readonly IProductWriteRepository _repositoryWrite;
 
-        public ProductUpdateCommandHandler(IProductRepository repository)
+        public ProductUpdateCommandHandler(IProductReadRepository repositoryRead, IProductWriteRepository repositoryWrite)
         {
-            _repository = repository;
+            _repositoryRead = repositoryRead;
+            _repositoryWrite = repositoryWrite;
         }
 
         public async Task<Product> Handle(ProductUpdateCommand request, CancellationToken cancellationToken)
         {
-            var productToUpdate = await _repository.GetById(request.Id);
+            var productToUpdate = await _repositoryRead.GetById(request.Id);
             
             if (productToUpdate == null)
             {
@@ -25,7 +27,7 @@ namespace ProductCatalog.Application.Products.Handlers
 
             productToUpdate.Update(request.Kod, request.Nazwa, request.Cena);
 
-            return await _repository.Update(productToUpdate);
+            return await _repositoryWrite.Update(productToUpdate);
         }
     }
 }

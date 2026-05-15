@@ -7,9 +7,9 @@ namespace ProductCatalog.Application.Products.Handlers
 {
     public class ProductCreateCommandHandler : IRequestHandler<ProductCreateCommand, Product>
     {
-        private readonly IProductRepository _repository;
+        private readonly IProductWriteRepository _repository;
 
-        public ProductCreateCommandHandler(IProductRepository repository) 
+        public ProductCreateCommandHandler(IProductWriteRepository repository) 
         { 
             _repository = repository; 
         }

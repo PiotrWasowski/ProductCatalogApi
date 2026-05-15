@@ -7,9 +7,9 @@ namespace ProductCatalog.Application.Products.Handlers
 {
     public class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, IEnumerable<Product>>
     {
-        private readonly IProductRepository _repository;
+        private readonly IProductReadRepository _repository;
 
-        public GetProductsQueryHandler(IProductRepository repository)
+        public GetProductsQueryHandler(IProductReadRepository repository)
         {
             _repository = repository;
         }

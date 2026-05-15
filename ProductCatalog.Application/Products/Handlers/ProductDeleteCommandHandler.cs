@@ -8,22 +8,24 @@ namespace ProductCatalog.Application.Products.Handlers
 {
     public class ProductDeleteCommandHandler: IRequestHandler<ProductDeleteCommand, Product>
     {
-        private readonly IProductRepository _repository;
-        public ProductDeleteCommandHandler(IProductRepository repository)
+        private readonly IProductWriteRepository _repositoryWrite;
+        private readonly IProductReadRepository _repositoryRead;
+        public ProductDeleteCommandHandler(IProductWriteRepository repositoryWrite, IProductReadRepository repositoryRead)
         {
-            _repository = repository;
+            _repositoryWrite = repositoryWrite;
+            _repositoryRead = repositoryRead;
         }
 
         public async Task<Product> Handle(ProductDeleteCommand request, CancellationToken cancellationToken)
         {
-            var product = await _repository.GetById(request.Id);
+            var product = await _repositoryRead.GetById(request.Id);
             
             if (product == null)
             {
                 throw new KeyNotFoundException($"Product with Id {request.Id} not found.");
             }
 
-            return await _repository.Delete(request.Id);
+            return await _repositoryWrite.Delete(request.Id);
         }
     }
 }

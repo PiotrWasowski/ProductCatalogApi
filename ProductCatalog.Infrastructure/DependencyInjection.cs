@@ -9,7 +9,13 @@ namespace ProductCatalog.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton<IProductRepository, InMemoryProductRepository>();
+            services.AddSingleton<InMemoryProductRepository>();
+
+            services.AddSingleton<IProductReadRepository>(
+                sp => sp.GetRequiredService<InMemoryProductRepository>());
+
+            services.AddSingleton<IProductWriteRepository>(
+                sp => sp.GetRequiredService<InMemoryProductRepository>());
             return services;
         }
     }
