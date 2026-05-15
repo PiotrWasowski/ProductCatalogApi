@@ -1,16 +1,14 @@
-using FluentValidation;
+
 using FluentValidation.AspNetCore;
-using ProductCatalogApi.Application.Products.Commands;
-using ProductCatalogApi.Application.Products.Handlers;
-using ProductCatalogApi.Application.Products.Queries;
-using ProductCatalogApi.Repositories;
-using ProductCatalogApi.Validators;
+using ProductCatalog.Application;
+using ProductCatalog.Infrastructure;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddSingleton<IProductRepository, InMemoryProductRepository>();
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -19,10 +17,6 @@ builder.Services.AddControllers()
     });
 
 builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssemblyContaining<ProductValidator>();
-builder.Services.AddScoped<GetProductsQueryHandler>();
-builder.Services.AddScoped<CreateProductCommandHandler>();
-builder.Services.AddScoped<DeleteProductCommandHandler>();
 
 builder.Services.AddCors(options =>
 {

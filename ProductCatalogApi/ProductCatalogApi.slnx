@@ -20,5 +20,8 @@
       <Property Name="VWDPort" Value="&quot;64686&quot;" />
     </Properties>
   </Project>
-  <Project Path="ProductCatalogApi.csproj" />
+  <Project Path="../ProductCatalog.Application/ProductCatalog.Application.csproj" Id="32d22ba6-4fb6-4571-8261-2b6fdf076676" />
+  <Project Path="../ProductCatalog.Domain/ProductCatalog.Domain.csproj" Id="73e61774-87d2-441a-8199-6908ff2f9d73" />
+  <Project Path="../ProductCatalog.Infrastructure/ProductCatalog.Infrastructure.csproj" Id="99da1880-ee0f-44ba-9530-cbbaf71ba095" />
+  <Project Path="ProductCatalog.API.csproj" />
 </Solution>

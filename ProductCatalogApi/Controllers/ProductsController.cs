@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ProductCatalogApi.Application.Products.Commands;
-using ProductCatalogApi.Application.Products.Handlers;
-using ProductCatalogApi.Application.Products.Queries;
-using ProductCatalogApi.Dtos;
-using ProductCatalogApi.Models;
+using ProductCatalog.Application.DTOs;
+using ProductCatalog.Application.Interfaces;
 
 namespace ProductCatalogApi.Controllers
 {
@@ -11,56 +8,76 @@ namespace ProductCatalogApi.Controllers
     [Route("api/products")]
     public class ProductsController: ControllerBase
     {
-        private readonly GetProductsQueryHandler _getHandler;
-        private readonly CreateProductCommandHandler _createHandler;
-        private readonly DeleteProductCommandHandler _deleteHandler;
+       private readonly IProductService _productService;
 
-        public ProductsController(GetProductsQueryHandler getHandler, CreateProductCommandHandler createHandler, DeleteProductCommandHandler deleteHandler)
+        public ProductsController(IProductService productService)
         {
-            _getHandler = getHandler;
-            _createHandler = createHandler;
-            _deleteHandler = deleteHandler;
+            _productService = productService;
         }
 
         [HttpGet]
-        public ActionResult<List<Product>> Get()
+        public async Task<ActionResult<IEnumerable<ProductDto>>> Get()
         {
-            var products = _getHandler.Handle();
+            var products = await _productService.GetProducts();
 
-            var result = products.Select(p => new ProductDto
+            if (products == null || !products.Any())
             {
-                Id = p.Id,
-                Kod = p.Kod,
-                Nazwa = p.Nazwa,
-                Cena = p.Cena
-            });
+                return NotFound("Products nof found");
+            }
 
-            return Ok(result);
+            return Ok(products);
         }
 
-        [HttpPost]
-        public ActionResult Add(CreateProductDto dto)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<ProductDto>> GetById(int id)
         {
-            var command = new CreateProductCommand
+            var product = await _productService.GetById(id);
+            if (product == null)
             {
-                Kod = dto.Kod,
-                Nazwa = dto.Nazwa,
-                Cena = dto.Cena
-            };
+                return NotFound($"Product with id {id} not found");
+            }
+            return Ok(product);
+        }
 
-            _createHandler.Handle(command);
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> Update(int id, [FromBody] CreateProductDto dto)
+        {
+            if (dto == null)
+            {
+                return BadRequest("Invalid product data");
+            }
+            var existingProduct = await _productService.GetById(id);
+            if (existingProduct == null)
+            {
+                return NotFound($"Product with id {id} not found");
+            }
+            await _productService.Update(id, dto);
             return Ok();
         }
 
-        [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        [HttpPost]
+        public async Task<ActionResult<ProductDto>> Add([FromBody] CreateProductDto dto)
         {
-            var command = new DeleteProductCommand
+            if (dto == null)
             {
-                Id = id
-            };
+                return BadRequest("Invalid product data");
+            }
 
-            _deleteHandler.Handle(command);
+            var createdProduct = await _productService.Create(dto);
+
+            return Ok(createdProduct);
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var product = await _productService.GetById(id);
+            if (product == null)
+            {
+                return NotFound($"Product with id {id} not found");
+            }
+
+            await _productService.Delete(id);
             return Ok();
         }
     }
