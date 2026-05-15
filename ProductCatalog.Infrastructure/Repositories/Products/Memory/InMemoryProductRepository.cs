@@ -5,80 +5,65 @@ namespace ProductCatalog.Infrastructure.Repositories.Products.Memory
 {
     public class InMemoryProductRepository : IProductRepository
     {
-        private readonly List<Product> _products = new();
-        private int _nextId = 2;
+        private readonly Dictionary<int, Product> _products = new();
+        private int _nextId = 1;
+        private readonly object _lock = new();
 
-        public async Task<Product> Create(Product product)
+        public Task<Product> Create(Product product)
         {
-            var newProduct = new Product(_nextId++, product.Kod, product.Nazwa, product.Cena);
-            _products.Add(newProduct);
-            return await Task.FromResult(newProduct);
+            lock (_lock)
+            {
+                var newProduct = new Product(_nextId++, product.Kod, product.Nazwa, product.Cena);
+                _products.Add(newProduct.Id, newProduct);
+                return Task.FromResult(newProduct);
+            }
         }
 
-        public async Task<Product> Delete(int id)
+        public Task<Product> Delete(int id)
         {
-            if (_products != null && _products.Any() && _products.Exists(p => p.Id == id))
+            lock (_lock)
             {
-                var productToDelete = _products.FirstOrDefault(p => p.Id == id);
-                if (_products.Remove(productToDelete))
+                if (!_products.TryGetValue(id, out var product))
                 {
-                    return await Task.FromResult(productToDelete);
+                    throw new KeyNotFoundException($"Product with Id {id} not found.");
                 }
-                else
-                {
-                    throw new Exception($"Failed to delete product with id {id}.");
-                }
-            }
-            else
-            {
-                throw new KeyNotFoundException($"Product with Id {id} not found.");
+
+                _products.Remove(id);
+
+                return Task.FromResult(product);
             }
         }
 
         public Task<IEnumerable<Product>> GetAll()
         {
-            if (_products == null || !_products.Any())
-            {
-                throw new Exception("No products found.");
-            }
-            else
-            {
-                return Task.FromResult(_products.AsEnumerable());
-            }
+            return Task.FromResult(_products.Values.AsEnumerable());
         }
 
         public Task<Product> GetById(int id)
         {
-            if (!_products.Any())
+            if (!_products.TryGetValue(id, out var product))
             {
                 throw new KeyNotFoundException($"Product with Id {id} not found.");
             }
-            else
-            {
-                var product = _products.FirstOrDefault(p => p.Id == id);
-                if (product == null)
-                {
-                    throw new KeyNotFoundException($"Product with Id {id} not found.");
-                }
-                return Task.FromResult(product);
-            }
+
+            return Task.FromResult(product);
         }
 
         public Task<Product> Update(Product product)
         {
-            if (product == null) {
-                throw new ArgumentNullException(nameof(product));
-            }
-
-            var existingProduct = _products.FirstOrDefault(p => p.Id == product.Id);
-            if (existingProduct == null)
+            lock (_lock)
             {
-                throw new KeyNotFoundException($"Product with Id {product.Id} not found.");
+                ArgumentNullException.ThrowIfNull(product);
+
+                if (!_products.TryGetValue(product.Id, out var existing))
+                {
+                    throw new KeyNotFoundException($"Product with Id {product.Id} not found.");
+                }
+                
+                existing.Update(product.Kod, product.Nazwa, product.Cena);
+
+                return Task.FromResult(existing);
             }
-
-            existingProduct.Update(product.Kod, product.Nazwa, product.Cena);
-
-            return Task.FromResult(existingProduct);
         }
     }
 }
