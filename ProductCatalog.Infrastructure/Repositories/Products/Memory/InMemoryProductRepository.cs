@@ -4,15 +4,15 @@ using System.Collections.Concurrent;
 
 namespace ProductCatalog.Infrastructure.Repositories.Products.Memory
 {
-    public class InMemoryProductRepository : IProductRepository
+    public sealed class InMemoryProductRepository : IProductRepository
     {
         private readonly ConcurrentDictionary<int, Product> _products = new();
-        private int _nextId = 1;
+        private int _nextId = 0;
 
         public Task<IEnumerable<Product>> GetAll()
         {
             var snapshot = _products.Values.ToList();
-            return Task.FromResult(snapshot.AsEnumerable());
+            return Task.FromResult<IEnumerable<Product>>(snapshot);
         }
 
         public Task<Product> GetById(int id)
@@ -27,6 +27,7 @@ namespace ProductCatalog.Infrastructure.Repositories.Products.Memory
 
         public Task<Product> Create(Product product)
         {
+            ArgumentNullException.ThrowIfNull(product);
             var newId = Interlocked.Increment(ref _nextId);
             var newProduct = new Product(newId, product.Kod, product.Nazwa, product.Cena);
             
@@ -54,13 +55,16 @@ namespace ProductCatalog.Infrastructure.Repositories.Products.Memory
         {
             ArgumentNullException.ThrowIfNull(product);
 
-            if (!_products.ContainsKey(product.Id))
+            if (!_products.TryGetValue(product.Id, out var existing))
             {
                 throw new KeyNotFoundException($"Product with Id {product.Id} not found.");
             }
 
             var updatedProduct = new Product(product.Id, product.Kod, product.Nazwa, product.Cena);
-            _products[product.Id] = updatedProduct;
+            if (!_products.TryUpdate(product.Id, updatedProduct, existing))
+            {
+                throw new InvalidOperationException($"Failed to update product with Id {product.Id}.");
+            }
 
             return Task.FromResult(updatedProduct);
         }
